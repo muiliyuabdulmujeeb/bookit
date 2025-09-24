@@ -1,7 +1,7 @@
 import uuid
 import enum
 from datetime import datetime, timezone
-from sqlalchemy import Column, INTEGER, UUID, VARCHAR, TEXT, ForeignKey, Enum, DateTime, DECIMAL, CheckConstraint
+from sqlalchemy import Column, INTEGER, UUID, VARCHAR, ForeignKey, Enum, DateTime, DECIMAL, CheckConstraint, Text
 from database.config import Base
 
 
@@ -25,7 +25,7 @@ class Users(Base):
     id = Column(UUID(as_uuid= True), primary_key= True, default= lambda: uuid.uuid4())
     full_name = Column(VARCHAR(50), nullable= False)
     email = Column(VARCHAR(50), unique=True, nullable= False)
-    password_hash = Column(VARCHAR(50), nullable= False)
+    password_hash = Column(Text(), nullable= False)
     role = Column(Enum(RoleEnum, name = "role_enum", create_type = True), nullable= False, default= RoleEnum.USER)
     created_at = Column(DateTime(timezone= True), nullable= False, default= lambda: datetime.now(tz= timezone.utc))
 
