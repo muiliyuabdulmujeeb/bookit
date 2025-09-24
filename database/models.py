@@ -35,7 +35,7 @@ class Services(Base):
 
     id = Column(UUID(as_uuid= True), primary_key= True, default= lambda: uuid.uuid4())
     title = Column(VARCHAR(50), nullable= False)
-    description = Column(TEXT(200))
+    description = Column(VARCHAR(250))
     price = Column(DECIMAL(10, 2), nullable= False)
     duration_mins = Column(INTEGER(), nullable= False)
     is_active = Column(Enum(IsActiveEnum, name = "is_active_enum", create_type = True), nullable= False, default= IsActiveEnum.TRUE)
@@ -45,8 +45,8 @@ class Bookings(Base):
     __tablename__ = "bookings"
 
     id = Column(UUID(as_uuid= True), primary_key= True, default= lambda: uuid.uuid4())
-    user_id = Column(UUID(as_uuid= True), ForeignKey("users.id", onupdate= "cascade", ondelete= "casacde"))
-    service_id = Column(UUID(as_uuid= True), ForeignKey("services.id", onupdate= "cascade", ondelete= "casacde"))
+    user_id = Column(UUID(as_uuid= True), ForeignKey("users.id", onupdate= "CASCADE", ondelete= "CASCADE"), index= True)
+    service_id = Column(UUID(as_uuid= True), ForeignKey("services.id", onupdate= "CASCADE", ondelete= "CASCADE"))
     start_time = Column(DateTime(timezone= True), nullable= False, default= lambda: datetime.now(tz= timezone.utc))
     end_time = Column(DateTime(timezone= True), nullable= False)
     role = Column(Enum(StatusEnum, name = "status_enum", create_type = True), nullable= False, default= StatusEnum.PENDING)
@@ -56,9 +56,9 @@ class Reviews(Base):
     __tablename__ = "reviews"
 
     id = Column(UUID(as_uuid= True), primary_key= True, default= lambda: uuid.uuid4())
-    booking_id = Column(UUID(as_uuid= True), ForeignKey("bookings.id", onupdate= "cascade", ondelete= "casacde"))
+    booking_id = Column(UUID(as_uuid= True), ForeignKey("bookings.id", onupdate= "CASCADE", ondelete= "CASCADE"), index= True)
     rating = Column(INTEGER(), nullable= False)
-    comment = Column(TEXT(250))
+    comment = Column(VARCHAR(250))
     created_at = Column(DateTime(timezone= True), nullable= False, default= lambda: datetime.now(tz= timezone.utc))
 
 

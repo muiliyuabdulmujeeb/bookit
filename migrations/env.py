@@ -1,18 +1,18 @@
+from dotenv import load_dotenv
 import os
 import asyncio
-from dotenv import load_dotenv
+
 from logging.config import fileConfig
-from database.models import Base
-from sqlalchemy import engine_from_config
+
+#from sqlalchemy import engine_from_config
 from sqlalchemy import pool, text
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
+from database.models import Base
 
 from alembic import context
 
 load_dotenv()
-
 DB_URL = os.getenv("DEV_DB_URL")
 
 # this is the Alembic Config object, which provides
@@ -29,6 +29,9 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
+
+#set the database.url for alembic.ini file
+config.set_main_option("sqlalchemy.url", DB_URL)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -48,7 +51,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url", DB_URL)
+    url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -58,7 +61,6 @@ def run_migrations_offline() -> None:
 
     with context.begin_transaction():
         context.run_migrations()
-
 
 def do_run_migrations(connection: Connection):
     #Runs migrations within the provoded connection
