@@ -1,29 +1,37 @@
-from fastapi import HTTPException, status
-from typing import Union
-from passlib.context import CryptContext
+from fastapi import HTTPException, status, Depends
 from sqlalchemy import select, update, delete
-from database.config import db_dependency, redis_dependency
-from utils.manager import jwt_manager, token_dependency
-from schemas.signup import SignUp
-from schemas.crud import UpdateAccount
-from database.models import Users
+from database.config import db_dependency
+from schemas.auth.auth import SignIn, SignUp, UpdateAccount
+from database.models import Users, Blacklists
+from utils.manager import pwd_context, jwt_manager
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated= "auto")
 
-async def create_account(user_details: SignUp, db: db_dependency):
+async def create_account(user_details: SignUp, db: db_dependency)-> dict:
     full_name = user_details.full_name
     email = user_details.email
     password_hash = pwd_context.hash(user_details.password)
     role = user_details.role
 
+    #check if user already exist
+    try:
+        stmt = select(Users).where(Users.email == email)
+        result_obj = await db.execute(stmt)
+        user = result_obj.scalar_one_or_none()
+    except Exception as e:
+        #logger
+        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"0{e}")
+
+    if user:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail="user already exist, sign in")
+
     to_add = Users(full_name= full_name, email= email, password_hash= password_hash, role= role)
 
     try:
-        await db.add(to_add)
+        db.add(to_add)
         await db.flush()
     except Exception as e:
         #logger
-        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail="500 internal server error")
+        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"1{e}")
     
     try:
         stmt = select(Users.id).where(Users.email == email)
@@ -31,8 +39,8 @@ async def create_account(user_details: SignUp, db: db_dependency):
         user_id = result_obj.scalar_one_or_none()
     except Exception as e:
         #logger
-        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail="500 internal server error")
-    to_encode= {"sub": str(user_id), "role": role}
+        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"2{e}")
+    to_encode= {"sub": str(user_id), "role": role.value}
     access_token = await jwt_manager.create_access_token(to_encode)
     refresh_token = await jwt_manager.create_refresh_token(to_encode)
 
@@ -45,7 +53,7 @@ async def create_account(user_details: SignUp, db: db_dependency):
     return to_return
 
 
-async def get_account_details(db: db_dependency, token: token_dependency):
+async def get_account_details(db: db_dependency, token: str = Depends(jwt_manager.validate_token))-> dict:
     data = await jwt_manager.decode_token(token)
     user_id = data.get("sub")
     try:
@@ -64,7 +72,7 @@ async def get_account_details(db: db_dependency, token: token_dependency):
 
     return user
 
-async def update_account(db: db_dependency, token: token_dependency, user_details: UpdateAccount):
+async def update_account(db: db_dependency, user_details: UpdateAccount, token: str = Depends(jwt_manager.validate_token))-> dict:
     data = await jwt_manager.decode_token(token)
     user_id = data.get("sub")
     try:
@@ -106,7 +114,7 @@ async def update_account(db: db_dependency, token: token_dependency, user_detail
     return to_return
 
 
-async def delete_account(db: db_dependency, token: token_dependency):
+async def delete_account(db: db_dependency, token: str= Depends(jwt_manager.validate_token))-> dict:
     data = await jwt_manager.decode_token(token)
     user_id = data.get("sub")
     try:
@@ -118,5 +126,64 @@ async def delete_account(db: db_dependency, token: token_dependency):
         raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail="500 internal server error")
     
     #blacklist token in redis
+    to_add = Blacklists(token= token)
+    try:
+        db.add(to_add)
+        await db.flush()
+    except Exception as e:
+        #logger
+        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"DB Error: {e}")
     
     return {"message": "account deleted"}
+
+
+async def sign_in(db: db_dependency, details: SignIn) -> dict:
+    #collect data
+    user_email= details.email
+    user_password= details.password
+    
+    #check if email exists
+    try:
+        stmt = select(Users).where(Users.email == user_email)
+        result_obj = await db.execute(stmt)
+        user = result_obj.scalar_one_or_none()
+    except Exception as e:
+        #logger
+        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Db error: {e}")
+
+    if not user:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail="email or password incorrect")
+    
+    #verify password
+    pass_verify = pwd_context.verify(user_password, user.password_hash)
+
+    if not pass_verify:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail="email or password incorrect")
+    
+    #create token
+    user_details = {"sub": str(user.id), "role": user.role}
+    access_token = await jwt_manager.create_access_token(user_details)
+    refresh_token = await jwt_manager.create_refresh_token(user_details)
+
+    to_return = {
+        "message": "login successful",
+        "access_token": access_token,
+        "refesh_token": refresh_token
+    }
+
+    return to_return
+
+async def sign_out(db: db_dependency,refresh_token:str, access_token: str= Depends(jwt_manager.validate_token))-> bool:
+    #blacklist token by adding it to the blacklisted tokens in postgres to simulate redis blacklisting
+    access_to_add = Blacklists(token= access_token)
+    refresh_to_add = Blacklists(token= refresh_token)
+    try:
+        db.add(access_to_add)
+        db.add(refresh_to_add)
+        await db.flush()
+    except Exception as e:
+        #logger
+        raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"DB Error: {e}")
+    
+    return True
+
