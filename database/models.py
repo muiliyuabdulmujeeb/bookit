@@ -55,4 +55,4 @@ class Reviews(Base):
 class Blacklists(Base):
     __tablename__ = "blacklists"
 
-    token = Column(UUID(as_uuid= True), primary_key= True, nullable= False)
+    token = Column(UUID(as_uuid= True), primary_key= True, nullable= False, unique= True)
