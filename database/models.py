@@ -1,23 +1,9 @@
 import uuid
-import enum
 from datetime import datetime, timezone
 from sqlalchemy import Column, INTEGER, UUID, VARCHAR, ForeignKey, Enum, DateTime, DECIMAL, CheckConstraint, Text
 from database.config import Base
+from shared import RoleEnum, IsActiveEnum, StatusEnum
 
-
-class RoleEnum(enum.Enum):
-    USER = "user"
-    ADMIN = "admin"
-
-class IsActiveEnum(enum.Enum):
-    TRUE = "True"
-    FALSE = "False"
-
-class StatusEnum(enum.Enum):
-    PENDING = "pending"
-    CONFIRMED = "confirmed"
-    CANCELLED = "cancelled"
-    COMPLETED = "completed"
 
 class Users(Base):
     __tablename__ = "users"
@@ -65,3 +51,8 @@ class Reviews(Base):
     __table_agrs__ = (
         CheckConstraint('rating > 1 AND rating < 6', name= "rating_between_1_to_5")
     )
+
+class Blacklists(Base):
+    __tablename__ = "blacklists"
+
+    token = Column(UUID(as_uuid= True), primary_key= True, nullable= False)
