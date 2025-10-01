@@ -35,7 +35,7 @@ class Bookings(Base):
     service_id = Column(UUID(as_uuid= True), ForeignKey("services.id", onupdate= "CASCADE", ondelete= "CASCADE"))
     start_time = Column(DateTime(timezone= True), nullable= False, default= lambda: datetime.now(tz= timezone.utc))
     end_time = Column(DateTime(timezone= True), nullable= False)
-    role = Column(Enum(StatusEnum, name = "status_enum", create_type = True), nullable= False, default= StatusEnum.PENDING)
+    status = Column(Enum(StatusEnum, name = "status_enum", create_type = True), nullable= False, default= StatusEnum.PENDING)
     created_at = Column(DateTime(timezone= True), nullable= False, default= lambda: datetime.now(tz= timezone.utc))
 
 class Reviews(Base):
