@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 from database.config import db_dependency
-from schemas.auth.auth import SignUp, SignUpResponseModel, GetAccountResponse, UpdateAccount, UpdateAccountResponse, SignIn, SignInResponseModel
+from schemas.auth.auth import SignUp, SignUpResponseModel, GetAccountResponse, UpdateAccount, UpdateAccountResponse, SignIn, SignInResponseModel, RefreshToken
 from src.auth.auth import create_account, get_account_details, update_account, delete_account, sign_in, sign_out
 from utils.manager import token_dependency, jwt_manager
 
@@ -40,7 +40,7 @@ async def sign_out_route(db: db_dependency, token: token_dependency):
     return result
 
 @auth_router.post("/refresh")
-async def refresh_access(token: str):
+async def refresh_access(token: RefreshToken):
     return await jwt_manager.generate_new_access_token(refresh_token= token)
 
 

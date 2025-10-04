@@ -41,18 +41,18 @@ class CreateBookingResponseModel(CreateBooking):
 class GetBookingResponseModel(BaseModel):
     message: Optional[str]
     id: str
-    user_id = str
-    service_id = str
+    user_id : str
+    service_id : str
     start_time: datetime
     end_time: datetime
     role: StatusEnum
     created_at: datetime
 
 class UpdateBooking(CreateBooking):
-    action: Optional[UpdateBookingAction] = None, Field(description="(user only) you can only reschedule or cancel if your booking is pending or confirmed")
-    start_time: Optional[datetime] = None, Field(description="(user only) if you intend to reschedule, please set the new start_time otherwise leave it blank")
-    end_time: Optional[datetime] = None, Field(description="(user only) if you intend to reschedule, please set the new end_time otherwise leave it blank")
-    update_status_to: Optional[StatusEnum] = None, Field(description="(admin only) input the new status")
+    action: Optional[UpdateBookingAction]= Field(description="(user only) you can only reschedule or cancel if your booking is pending or confirmed")
+    start_time: Optional[datetime]= Field(description="(user only) if you intend to reschedule, please set the new start_time otherwise leave it blank")
+    end_time: Optional[datetime]= Field(description="(user only) if you intend to reschedule, please set the new end_time otherwise leave it blank")
+    update_status_to: Optional[StatusEnum]= Field(description="(admin only) input the new status")
 
 
     @field_validator("start_time")

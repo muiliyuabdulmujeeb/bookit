@@ -186,4 +186,3 @@ async def sign_out(db: db_dependency,refresh_token:str, access_token: str= Depen
         raise HTTPException(status_code= status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"DB Error: {e}")
     
     return True
-

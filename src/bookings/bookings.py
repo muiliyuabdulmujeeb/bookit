@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status, Query
-from sqlalchemy import select, create, update, delete, desc, and_
+from sqlalchemy import select, update, delete, desc, and_
 from typing import Annotated, Optional, Union, Any
 from datetime import datetime, timezone
-from schemas.bookings.bookings import CreateBooking, UpdateBooking, CreateBookingResponseModel, UpdateBookingResponseModel
+from schemas.bookings.bookings import CreateBooking, UpdateBooking, CreateBookingResponseModel
 from database.config import db_dependency
 from database.models import Bookings, Users, Services
 from shared import StatusEnum, RoleEnum, UpdateBookingAction

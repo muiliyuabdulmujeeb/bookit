@@ -41,4 +41,4 @@ class UpdateReviewResponseModel(CreateReviewResponseModel):
 
 class GetReviewResponseModel(CreateReviewResponseModel):
     class Config:
-        orm_mode = True
+        from_attributes = True

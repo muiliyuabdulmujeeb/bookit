@@ -43,3 +43,6 @@ class SignInResponseModel(BaseModel):
     message: str
     access_token: Optional[str]
     refresh_token: Optional[str]
+
+class RefreshToken(BaseModel):
+    refresh_token: str

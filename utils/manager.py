@@ -110,18 +110,18 @@ class jwt_manager():
         
         return token
     
-    async def generate_new_access_token(refresh_token: str)-> str:
+    async def generate_new_access_token(self, refresh_token: str)-> str:
         #validate token
-        validated_token = await jwt_manager.validate_token(token= refresh_token)
+        validated_token = await self.validate_token(token= refresh_token)
         #decode token to get user data
         data = await jwt_manager.decode_token(validated_token)
         #encode user data
         token = await jwt_manager.create_access_token(data)
         return token
     
-    async def check_role(token: str)-> Optional[str]:
+    async def check_role(self, token: str)-> Optional[str]:
 
-        token = await jwt_manager.validate_token(token)
+        token = await self.validate_token(token)
         
         data = jwt.decode(token, key= SECRET_KEY, algorithms= [ALGORITHM])
 
