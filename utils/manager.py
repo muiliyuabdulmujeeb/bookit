@@ -119,7 +119,7 @@ class jwt_manager():
         token = await jwt_manager.create_access_token(data)
         return token
     
-    async def check_role(token: str)-> Optional[None]:
+    async def check_role(token: str)-> Optional[str]:
 
         token = await jwt_manager.validate_token(token)
         
@@ -128,19 +128,19 @@ class jwt_manager():
         user_role = data.get("role")
 
         match user_role:
-            case RoleEnum.USER: return RoleEnum.USER
-            case RoleEnum.ADMIN: return RoleEnum.ADMIN
+            case RoleEnum.USER: return RoleEnum.USER.value
+            case RoleEnum.ADMIN: return RoleEnum.ADMIN.value
             case _: return None
 
 
 
-async def check_if_user(token: str)-> bool:
+async def check_if_user(token: token_dependency)-> bool:
     assigned_role = await jwt_manager.check_role(token)
     if assigned_role != RoleEnum.USER:
         raise HTTPException(status_code= status.HTTP_403_FORBIDDEN, detail="you are not allowed to access this service")
     return True
 
-async def check_if_admin(token: str)-> bool:
+async def check_if_admin(token: token_dependency)-> bool:
     assigned_role = await jwt_manager.check_role(token)
     if assigned_role != RoleEnum.ADMIN:
         raise HTTPException(status_code= status.HTTP_403_FORBIDDEN, detail="you are not allowed to access this service")

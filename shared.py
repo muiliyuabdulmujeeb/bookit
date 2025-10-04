@@ -13,3 +13,7 @@ class StatusEnum(enum.Enum):
     CONFIRMED = "confirmed"
     CANCELLED = "cancelled"
     COMPLETED = "completed"
+
+class UpdateBookingAction(enum.Enum):
+    RESCHEDULE = "reschedule"
+    CANCEL = "cancel"
