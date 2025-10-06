@@ -35,7 +35,7 @@ class Bookings(Base):
     service_id = Column(UUID(as_uuid= True), ForeignKey("services.id", onupdate= "CASCADE", ondelete= "CASCADE"))
     start_time = Column(DateTime(timezone= True), nullable= False, default= lambda: datetime.now(tz= timezone.utc))
     end_time = Column(DateTime(timezone= True), nullable= False)
-    status = Column(Enum(StatusEnum, name = "status_enum", create_type = True), nullable= False, default= StatusEnum.PENDING)
+    status = Column(Enum(StatusEnum, name = "status_enum", create_type = True), nullable= False, default= StatusEnum.CONFIRMED)
     created_at = Column(DateTime(timezone= True), nullable= False, default= lambda: datetime.now(tz= timezone.utc))
 
 class Reviews(Base):
@@ -55,4 +55,4 @@ class Reviews(Base):
 class Blacklists(Base):
     __tablename__ = "blacklists"
 
-    token = Column(UUID(as_uuid= True), primary_key= True, nullable= False, unique= True)
+    token = Column(VARCHAR(250), primary_key= True, nullable= False, unique= True)

@@ -25,10 +25,10 @@ class GetAccountResponse(BaseModel):
     role: RoleEnum
 
 class UpdateAccount(BaseModel):
-    full_name: Optional[str]
-    email: Optional[EmailStr]
-    role: Optional[RoleEnum]
-    password: Optional[str]
+    full_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    role: Optional[RoleEnum] = None
+    password: Optional[str] = None
 
 class UpdateAccountResponse(GetAccountResponse):
     pass

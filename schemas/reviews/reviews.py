@@ -38,7 +38,3 @@ class UpdateReview(BaseModel):
     
 class UpdateReviewResponseModel(CreateReviewResponseModel):
     pass
-
-class GetReviewResponseModel(CreateReviewResponseModel):
-    class Config:
-        from_attributes = True

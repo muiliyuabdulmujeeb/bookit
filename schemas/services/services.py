@@ -13,7 +13,7 @@ class CreateService(BaseModel):
     duration_mins: int
 
 class CreateServiceResponseModel(CreateService):
-    message: Optional[str]
+    message: Optional[str] = None
     id: UUID
     is_active: IsActiveEnum
     created_at: datetime
@@ -22,10 +22,12 @@ class UpdateService(BaseModel):
     title: Optional[str] = Field(..., min_length=2, max_length=50)
     description: Optional[str] = Field(..., min_length=2, max_length=250)
     price : Optional[Decimal] = Field(..., max_digits=10, decimal_places=2)
-    duration_mins: Optional[int]
+    duration_mins: Optional[int] = None
 
 class UpdateServiceResponseModel(CreateServiceResponseModel):
-    pass
+    class Config:
+        from_attributes = True
 
 class GetServiceResponseModel(CreateServiceResponseModel):
-    pass
+    class Config:
+        from_attributes = True

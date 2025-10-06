@@ -5,8 +5,8 @@ class RoleEnum(enum.Enum):
     ADMIN = "admin"
 
 class IsActiveEnum(enum.Enum):
-    TRUE = "True"
-    FALSE = "False"
+    TRUE = "true"
+    FALSE = "false"
 
 class StatusEnum(enum.Enum):
     PENDING = "pending"

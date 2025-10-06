@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 from utils.manager import db_dependency, token_dependency
 from src.reviews.reviews import create_review, get_reviews_for_service, update_review, delete_review
-from schemas.reviews.reviews import CreateReview, CreateReviewResponseModel, GetReviewResponseModel, UpdateReview, UpdateReviewResponseModel
+from schemas.reviews.reviews import CreateReview, CreateReviewResponseModel, UpdateReview, UpdateReviewResponseModel
 
 reviews_router = APIRouter(prefix="/reviews", tags= ["reviews"])
 
