@@ -13,7 +13,7 @@ app.include_router(bookings_router)
 app.include_router(reviews_router)
 
 
-@app.get("", status_code= 200)
+@app.get("/", status_code= 200)
 async def app_home():
     return {"message": "welcome to bookit"}
 
