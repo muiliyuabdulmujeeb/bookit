@@ -2,7 +2,7 @@
 
 A production-ready REST API for a bookings platform that enables users to browse services, make bookings, and leave reviews. Built with FastAPI and PostgreSQL.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#features)
 - [Architecture Decisions](#architecture-decisions)
@@ -15,7 +15,7 @@ A production-ready REST API for a bookings platform that enables users to browse
 - [Deployment](#deployment)
 - [API Endpoints](#api-endpoints)
 
-## ✨ Features
+## Features
 
 - **User Authentication & Authorization**: JWT-based authentication with role-based access control (User/Admin)
 - **Service Management**: Browse, search, and manage services with pricing and availability
@@ -24,7 +24,7 @@ A production-ready REST API for a bookings platform that enables users to browse
 - **Advanced Filtering**: Search and filter services and bookings with multiple parameters
 - **Production Ready**: Structured logging, environment-based configuration, and proper error handling
 
-## 🏗 Architecture Decisions
+## Architecture Decisions
 
 ### Database Choice: PostgreSQL
 
@@ -55,7 +55,7 @@ This separation ensures:
 - **Maintainability**: Clear separation of concerns
 - **Scalability**: Easy to modify or extend individual components
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Framework**: FastAPI
 - **Database**: PostgreSQL 17+
@@ -66,7 +66,7 @@ This separation ensures:
 - **Validation**: Pydantic v2
 
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -116,7 +116,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 The API will be available at `http://localhost:8000`
 API documentation will be at `http://localhost:8000/docs`
 
-## 🔧 Environment Variables
+## Environment Variables
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
@@ -135,14 +135,14 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_MINUTES=10080
 ```
 
-## 📖 API Documentation
+## API Documentation
 
 Once the application is running, you can access:
 
 - **Swagger UI**: `http://localhost:8000/docs`
 
 
-## 🚢 Deployment
+## Deployment
 
 ### Deployment on Render
 
@@ -162,7 +162,7 @@ The application is deployed on [Render](https://render.com) with the following c
 GET /health
 ```
 
-## 📝 API Endpoints
+## API Endpoints
 
 ### Authentication Endpoints
 
@@ -220,7 +220,7 @@ GET /health
 | PATCH | `/reviews/{id}` | Update review | Owner |
 | DELETE | `/reviews/{id}` | Delete review | Owner / Admin |
 
-## 📊 Status Codes
+## Status Codes
 
 The API uses standard HTTP status codes:
 
@@ -234,7 +234,7 @@ The API uses standard HTTP status codes:
 - `422 Unprocessable Entity`: Validation error
 - `500 Internal Server Error`: Server error
 
-## 🔒 Security Considerations
+## Security Considerations
 
 - **Password Security**: All passwords are hashed using argon with salt rounds
 - **JWT Security**: Tokens are signed with HS256 algorithm and include expiration
@@ -242,11 +242,11 @@ The API uses standard HTTP status codes:
 - **Input Validation**: Pydantic schemas validate all input data
 - **Environment Variables**: All sensitive data stored in environment variables
 
-## 📈 Monitoring & Logging
+## Monitoring & Logging
 - **Request Logging**: All HTTP requests are logged with response times
 - **Health Checks**: `/health` endpoint for monitoring service status
 
 
-## 👥 Author
+## Developed by
 
 - **Muiliyu Abdulmujeeb** - *ALT/SOE/024/5573* - [GitHub](https://github.com/muiliyuabdulmujeeb)
