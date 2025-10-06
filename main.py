@@ -11,3 +11,12 @@ app.include_router(auth_router)
 app.include_router(service_router)
 app.include_router(bookings_router)
 app.include_router(reviews_router)
+
+
+@app.get("", status_code= 200)
+async def app_home():
+    return {"message": "welcome to bookit"}
+
+@app.get("/health", status_code= 200)
+async def app_health():
+    return {"message": "App is running"}
